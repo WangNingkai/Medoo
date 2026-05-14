@@ -1346,13 +1346,9 @@ class Medoo
             return false;
         }
 
-        $keys = array_keys($join);
+        $key = array_key_first($join);
 
-        if (
-            isset($keys[0]) &&
-            is_string($keys[0]) &&
-            strpos($keys[0], '[') === 0
-        ) {
+        if (is_string($key) && isset($key[0]) && $key[0] === '[') {
             return true;
         }
 
