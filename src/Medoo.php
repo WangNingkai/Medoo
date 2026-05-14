@@ -1468,19 +1468,17 @@ class Medoo
             $columnsKey = array_keys($columns);
 
             if (count($columnsKey) === 1 && is_array($columns[$columnsKey[0]])) {
-                $indexKey = array_keys($columns)[0];
+                $indexKey = $columnsKey[0];
                 $dataKey = preg_replace("/^" . $this::COLUMN_PATTERN . "\./u", '', $indexKey);
                 $currentStack = [];
 
-                foreach ($data as $item) {
-                    $this->dataMap($data, $columns[$indexKey], $columnMap, $currentStack, false, $result);
-                    $index = $data[$dataKey];
+                $this->dataMap($data, $columns[$indexKey], $columnMap, $currentStack, false, $result);
+                $index = $data[$dataKey];
 
-                    if (isset($result)) {
-                        $result[$index] = $currentStack;
-                    } else {
-                        $stack[$index] = $currentStack;
-                    }
+                if (isset($result)) {
+                    $result[$index] = $currentStack;
+                } else {
+                    $stack[$index] = $currentStack;
                 }
             } else {
                 $currentStack = [];
