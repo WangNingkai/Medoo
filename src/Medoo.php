@@ -695,17 +695,6 @@ class Medoo
     }
 
     /**
-     * Determine whether the given value is a Raw instance.
-     *
-     * @param mixed $object The value to inspect.
-     * @return bool
-     */
-    protected function isRaw($object): bool
-    {
-        return $object instanceof Raw;
-    }
-
-    /**
      * Build the SQL fragment represented by a Raw object.
      *
      * @param mixed $raw The value to inspect.
@@ -714,7 +703,7 @@ class Medoo
      */
     protected function buildRaw($raw, array &$map): ?string
     {
-        if (!$this->isRaw($raw)) {
+        if (!$raw instanceof Raw) {
             return null;
         }
 
@@ -823,6 +812,33 @@ class Medoo
     }
 
     /**
+     * Cache and return parsed column metadata for repeated column definitions.
+     *
+     * @param string $column The column definition string.
+     * @param string $pattern The regular expression used to parse the definition.
+     * @param array $cache The parser cache, passed by reference.
+     * @return array
+     */
+    protected function columnMatch(string $column, string $pattern, array &$cache): array
+    {
+        if (!isset($cache[$column])) {
+            if (count($cache) >= 512) {
+                $cache = [];
+            }
+
+            preg_match($pattern, $column, $match);
+
+            $cache[$column] = [
+                'column' => $match['column'] ?? '',
+                'alias' => $match['alias'] ?? '',
+                'type' => $match['type'] ?? ''
+            ];
+        }
+
+        return $cache[$column];
+    }
+
+    /**
      * Build the column list fragment for an SQL statement.
      *
      * @param array|string $columns The requested columns.
@@ -844,24 +860,37 @@ class Medoo
             $columns = [$columns];
         }
 
+        static $columnCache = [];
+        static $rawColumnCache = [];
+
+        $isSingleRootColumn = $root && count($columns) === 1;
+
         foreach ($columns as $key => $value) {
             $isIntKey = is_int($key);
             $isArrayValue = is_array($value);
 
-            if (!$isIntKey && $isArrayValue && $root && count(array_keys($columns)) === 1) {
+            if (!$isIntKey && $isArrayValue && $isSingleRootColumn) {
                 $stack[] = $this->columnQuote($key);
                 $stack[] = $this->columnPush($value, $map, false, $isJoin);
             } elseif ($isArrayValue) {
                 $stack[] = $this->columnPush($value, $map, false, $isJoin);
             } elseif (!$isIntKey && $raw = $this->buildRaw($value, $map)) {
-                preg_match("/(?<column>" . $this::COLUMN_PATTERN . ")(\s*\[(?<type>(String|Bool|Int|Number))\])?/u", $key, $match);
+                $match = $this->columnMatch(
+                    $key,
+                    "/(?<column>" . $this::COLUMN_PATTERN . ")(\s*\[(?<type>(String|Bool|Int|Number))\])?/u",
+                    $rawColumnCache
+                );
                 $stack[] = "{$raw} AS {$this->columnQuote($match['column'])}";
             } elseif ($isIntKey && is_string($value)) {
                 if ($isJoin && strpos($value, '*') !== false) {
                     throw new InvalidArgumentException('Cannot use table.* to select all columns while joining table.');
                 }
 
-                preg_match("/(?<column>" . $this::COLUMN_PATTERN . ")(?:\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u", $value, $match);
+                $match = $this->columnMatch(
+                    $value,
+                    "/(?<column>" . $this::COLUMN_PATTERN . ")(?:\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u",
+                    $columnCache
+                );
 
                 $columnString = '';
 
@@ -1020,7 +1049,7 @@ class Medoo
                             $column .= ' NOT';
                         }
 
-                        if ($this->isRaw($value[0]) && $this->isRaw($value[1])) {
+                        if ($value[0] instanceof Raw && $value[1] instanceof Raw) {
                             $stack[] = "({$column} BETWEEN {$this->buildRaw($value[0], $map)} AND {$this->buildRaw($value[1], $map)})";
                         } else {
                             $stack[] = "({$column} BETWEEN {$mapKey}a AND {$mapKey}b)";
@@ -1291,7 +1320,7 @@ class Medoo
             } elseif ($raw = $this->buildRaw($columnFn, $map)) {
                 $column = $raw;
             } else {
-                if (empty($columns) || $this->isRaw($columns)) {
+                if (empty($columns) || $columns instanceof Raw) {
                     $columns = '*';
                     $where = $join;
                 }
@@ -1414,26 +1443,41 @@ class Medoo
             return $stack;
         }
 
+        static $columnCache = [];
+        static $rawColumnCache = [];
+
+        $isSingleRootColumn = $root && count($columns) === 1;
+
         foreach ($columns as $key => $value) {
-            if (is_int($key)) {
-                preg_match("/(" . $this::TABLE_PATTERN . "\.)?(?<column>" . $this::COLUMN_PATTERN . ")(?:\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u", $value, $keyMatch);
+            $isIntKey = is_int($key);
+
+            if ($isIntKey) {
+                $keyMatch = $this->columnMatch(
+                    $value,
+                    "/(" . $this::TABLE_PATTERN . "\.)?(?<column>" . $this::COLUMN_PATTERN . ")(?:\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u",
+                    $columnCache
+                );
 
                 $columnKey = !empty($keyMatch['alias']) ?
                     $keyMatch['alias'] :
                     $keyMatch['column'];
 
-                $stack[$value] = isset($keyMatch['type']) ?
+                $stack[$value] = !empty($keyMatch['type']) ?
                     [$columnKey, $keyMatch['type']] :
                     [$columnKey];
-            } elseif ($this->isRaw($value)) {
-                preg_match("/(" . $this::TABLE_PATTERN . "\.)?(?<column>" . $this::COLUMN_PATTERN . ")(\s*\[(?<type>(String|Bool|Int|Number))\])?/u", $key, $keyMatch);
+            } elseif ($value instanceof Raw) {
+                $keyMatch = $this->columnMatch(
+                    $key,
+                    "/(" . $this::TABLE_PATTERN . "\.)?(?<column>" . $this::COLUMN_PATTERN . ")(\s*\[(?<type>(String|Bool|Int|Number))\])?/u",
+                    $rawColumnCache
+                );
                 $columnKey = $keyMatch['column'];
 
-                $stack[$key] = isset($keyMatch['type']) ?
+                $stack[$key] = !empty($keyMatch['type']) ?
                     [$columnKey, $keyMatch['type']] :
                     [$columnKey];
-            } elseif (!is_int($key) && is_array($value)) {
-                if ($root && count(array_keys($columns)) === 1) {
+            } elseif (!$isIntKey && is_array($value)) {
+                if ($isSingleRootColumn) {
                     $stack[$key] = [$key, 'String'];
                 }
 
@@ -1465,11 +1509,12 @@ class Medoo
         ?array &$result = null
     ): void {
         if ($root) {
-            $columnsKey = array_keys($columns);
+            $indexKey = array_key_first($columns);
 
-            if (count($columnsKey) === 1 && is_array($columns[$columnsKey[0]])) {
-                $indexKey = $columnsKey[0];
-                $dataKey = preg_replace("/^" . $this::COLUMN_PATTERN . "\./u", '', $indexKey);
+            if (count($columns) === 1 && is_array($columns[$indexKey])) {
+                $dataKey = strpos($indexKey, '.') === false ?
+                    $indexKey :
+                    preg_replace("/^" . $this::COLUMN_PATTERN . "\./u", '', $indexKey);
                 $currentStack = [];
 
                 $this->dataMap($data, $columns[$indexKey], $columnMap, $currentStack, false, $result);
@@ -1495,7 +1540,7 @@ class Medoo
         }
 
         foreach ($columns as $key => $value) {
-            $isRaw = $this->isRaw($value);
+            $isRaw = $value instanceof Raw;
 
             if (is_int($key) || $isRaw) {
                 $map = $columnMap[$isRaw ? $key : $value];
@@ -1503,7 +1548,9 @@ class Medoo
                 $item = $data[$columnKey];
 
                 if (isset($map[1])) {
-                    if ($isRaw && in_array($map[1], ['Object', 'JSON'])) {
+                    $type = $map[1];
+
+                    if ($isRaw && ($type === 'Object' || $type === 'JSON')) {
                         continue;
                     }
 
@@ -1512,7 +1559,7 @@ class Medoo
                         continue;
                     }
 
-                    switch ($map[1]) {
+                    switch ($type) {
 
                         case 'Number':
                             $stack[$columnKey] = (float) $item;

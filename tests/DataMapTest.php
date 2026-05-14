@@ -9,7 +9,7 @@ class DataMapTest extends MedooTestCase
 {
     public function testDataMapKeepsIndexedNestedResultConsistent(): void
     {
-        $database = new class extends Medoo {
+        $database = new class () extends Medoo {
             public function __construct()
             {
                 parent::__construct([
