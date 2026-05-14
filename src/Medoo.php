@@ -1671,6 +1671,7 @@ class Medoo
         $statement = $this->exec($this->selectContext($table, $map, $join, $columns, $where), $map);
 
         $this->columnMap($columns, $columnMap, true);
+        $resultKey = $isSingle ? $columnMap[$column][0] : null;
 
         if (!$this->statement) {
             return $result;
@@ -1697,9 +1698,13 @@ class Medoo
 
                 $callback(
                     $isSingle ?
-                    $currentStack[$columnMap[$column][0]] :
+                    $currentStack[$resultKey] :
                     $currentStack
                 );
+            } elseif ($isSingle) {
+                $this->dataMap($data, $columns ?? [], $columnMap, $currentStack, true);
+
+                $result[] = $currentStack[$resultKey];
             } else {
                 $this->dataMap($data, $columns ?? [], $columnMap, $currentStack, true, $result);
             }
@@ -1707,17 +1712,6 @@ class Medoo
 
         if (isset($callback)) {
             return null;
-        }
-
-        if ($isSingle) {
-            $singleResult = [];
-            $resultKey = $columnMap[$column][0];
-
-            foreach ($result as $item) {
-                $singleResult[] = $item[$resultKey];
-            }
-
-            return $singleResult;
         }
 
         return $result;
