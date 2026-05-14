@@ -2023,21 +2023,21 @@ class Medoo
         }
 
         // @codeCoverageIgnoreStart
-        $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        $data = $query->fetch(PDO::FETCH_ASSOC);
 
-        if (isset($data[0])) {
+        if ($data !== false) {
             if ($column === '*') {
-                return $data[0];
+                return $data;
             }
 
             $this->columnMap($columns, $columnMap, true);
-            $this->dataMap($data[0], $columns, $columnMap, $currentStack, true, $result);
+            $this->dataMap($data, $columns, $columnMap, $currentStack, true);
 
             if ($isSingle) {
-                return $result[0][$columnMap[$column][0]];
+                return $currentStack[$columnMap[$column][0]];
             }
 
-            return $result[0];
+            return $currentStack;
         }
     }
     // @codeCoverageIgnoreEnd
