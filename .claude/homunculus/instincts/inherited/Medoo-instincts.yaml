@@ -1,0 +1,405 @@
+# Instincts generated from https://github.com/WangNingkai/Medoo
+# Generated: 2026-05-14T09:54:56.008Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: Medoo-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/WangNingkai/Medoo
+---
+
+# Medoo Commit Length
+
+## Action
+
+Keep commit messages concise (~39 characters)
+
+## Evidence
+
+- Average commit message length: 39 chars
+- Based on 5 commits
+
+---
+id: Medoo-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/WangNingkai/Medoo
+---
+
+# Medoo Naming Files
+
+## Action
+
+Use PascalCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: PascalCase
+
+---
+id: Medoo-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/WangNingkai/Medoo
+---
+
+# Medoo Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: Medoo-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/WangNingkai/Medoo
+---
+
+# Medoo Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: Medoo-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/WangNingkai/Medoo
+---
+
+# Medoo Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: Medoo-workflow-core-logic-update-with-related-tests
+trigger: "when doing core logic update with related tests"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/WangNingkai/Medoo
+---
+
+# Medoo Workflow Core Logic Update With Related Tests
+
+## Action
+
+Follow the core-logic-update-with-related-tests workflow:
+1. Edit src/Medoo.php to implement the improvement or fix.
+2. Update or add relevant test files in tests/ (e.g., DataMapTest.php, ColumnMappingTest.php) to cover the changes.
+3. Commit both the implementation and test changes together.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: src/Medoo.php, tests/*.php
+
+---
+id: Medoo-workflow-core-logic-update-no-tests
+trigger: "when doing core logic update no tests"
+confidence: 0.65
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/WangNingkai/Medoo
+---
+
+# Medoo Workflow Core Logic Update No Tests
+
+## Action
+
+Follow the core-logic-update-no-tests workflow:
+1. Edit src/Medoo.php to implement the improvement or fix.
+2. Commit the change without touching any test files.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~3x per month
+- Files: src/Medoo.php
+
+---
+id: medoo-instinct-file-naming
+trigger: "When creating or renaming a file"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct File Naming
+
+## Action
+
+Use PascalCase for file names
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.files
+
+---
+id: medoo-instinct-function-naming
+trigger: "When defining a function"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Function Naming
+
+## Action
+
+Use camelCase for function names
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.functions
+
+---
+id: medoo-instinct-class-naming
+trigger: "When defining a class"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Class Naming
+
+## Action
+
+Use PascalCase for class names
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.classes
+
+---
+id: medoo-instinct-constant-naming
+trigger: "When defining a constant"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Constant Naming
+
+## Action
+
+Use SCREAMING_SNAKE_CASE for constant names
+
+## Evidence
+
+- Pattern in codeStyle.namingConventions.constants
+
+---
+id: medoo-instinct-relative-imports
+trigger: "When importing modules"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Relative Imports
+
+## Action
+
+Use relative import paths
+
+## Evidence
+
+- Pattern in codeStyle.importStyle
+
+---
+id: medoo-instinct-named-exports
+trigger: "When exporting from a module"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Named Exports
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in codeStyle.exportStyle
+
+---
+id: medoo-instinct-test-location
+trigger: "When adding or updating tests"
+confidence: 0.9
+domain: testing
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Test Location
+
+## Action
+
+Place test files in the separate 'tests' folder
+
+## Evidence
+
+- Pattern in architecture.folderStructure.testLocation
+- Files: tests/*.php
+
+---
+id: medoo-instinct-test-naming
+trigger: "When naming a test file"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Test Naming
+
+## Action
+
+Use PascalCase and end with 'Test.php' (e.g., DataMapTest.php)
+
+## Evidence
+
+- Examples: DataMapTest.php, ColumnMappingTest.php
+
+---
+id: medoo-instinct-test-update-after-core-change
+trigger: "When updating core logic in src/Medoo.php"
+confidence: 0.9
+domain: testing
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Test Update After Core Change
+
+## Action
+
+Update or add related test files in tests/ to cover the change
+
+## Evidence
+
+- Workflow: core-logic-update-with-related-tests
+- Commit sequences involving both src/Medoo.php and tests/*.php
+
+---
+id: medoo-instinct-commit-prefix-update
+trigger: "When committing a change that improves or fixes something"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Commit Prefix Update
+
+## Action
+
+Prefix the commit message with '[update]'
+
+## Evidence
+
+- Pattern in commits.prefixes
+- Examples: [update] improve dataMap performance issue
+
+---
+id: medoo-instinct-commit-length
+trigger: "When writing a commit message"
+confidence: 0.8
+domain: git
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Commit Length
+
+## Action
+
+Keep the commit message concise (average ~39 characters)
+
+## Evidence
+
+- Pattern in commits.averageLength
+
+---
+id: medoo-instinct-core-logic-update-with-tests
+trigger: "When improving or fixing core logic and ensuring changes are covered by tests"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Core Logic Update With Tests
+
+## Action
+
+Edit src/Medoo.php and related test files, then commit both together
+
+## Evidence
+
+- Workflow: core-logic-update-with-related-tests
+- Commit sequences involving both src/Medoo.php and tests/*.php
+
+---
+id: medoo-instinct-core-logic-update-no-tests
+trigger: "When making a small or isolated improvement/fix to core logic that does not require test changes"
+confidence: 0.8
+domain: workflow
+source: repo-analysis
+source_repo: WangNingkai/Medoo
+---
+
+# Medoo Instinct Core Logic Update No Tests
+
+## Action
+
+Edit src/Medoo.php and commit the change without touching any test files
+
+## Evidence
+
+- Workflow: core-logic-update-no-tests
+- Commit sequences involving only src/Medoo.php
+
