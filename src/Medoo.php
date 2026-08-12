@@ -1424,11 +1424,15 @@ class Medoo
             }
 
             if (is_string($relation)) {
-                $relation = 'USING ("' . $relation . '")';
+                $relation = 'USING (' . $this->columnQuote($relation) . ')';
             } elseif (is_array($relation)) {
                 // Syntax: ['column1', 'column2']
                 if (isset($relation[0])) {
-                    $relation = 'USING ("' . implode('", "', $relation) . '")';
+                    $columns = array_map(function ($column) {
+                        return $this->columnQuote($column);
+                    }, $relation);
+
+                    $relation = 'USING (' . implode(', ', $columns) . ')';
                 } else {
                     $joins = [];
 
