@@ -6,7 +6,7 @@ namespace Medoo\Tests;
 class AggregateTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testCount($type)
+    public function testCount(string $type): void
     {
         $this->setType($type);
 
@@ -25,7 +25,7 @@ class AggregateTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testMax($type)
+    public function testMax(string $type): void
     {
         $this->setType($type);
 
@@ -41,7 +41,7 @@ class AggregateTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testMin($type)
+    public function testMin(string $type): void
     {
         $this->setType($type);
 
@@ -57,7 +57,7 @@ class AggregateTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testAvg($type)
+    public function testAvg(string $type): void
     {
         $this->setType($type);
 
@@ -73,7 +73,7 @@ class AggregateTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testSum($type)
+    public function testSum(string $type): void
     {
         $this->setType($type);
 

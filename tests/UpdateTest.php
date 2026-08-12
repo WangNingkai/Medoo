@@ -8,7 +8,7 @@ use Medoo\Medoo;
 class UpdateTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testUpdate($type)
+    public function testUpdate(string $type): void
     {
         $this->setType($type);
 
@@ -61,7 +61,7 @@ class UpdateTest extends MedooTestCase
         ], $this->database->queryString);
     }
 
-    public function testOracleLOBsUpdate()
+    public function testOracleLOBsUpdate(): void
     {
         $this->setType("oracle");
 

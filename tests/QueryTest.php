@@ -8,7 +8,7 @@ use Medoo\Medoo;
 class QueryTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testQuery($type)
+    public function testQuery(string $type): void
     {
         $this->setType($type);
 
@@ -24,7 +24,7 @@ class QueryTest extends MedooTestCase
         );
     }
 
-    public function testQueryWithPrefix()
+    public function testQueryWithPrefix(): void
     {
         $database = new Medoo([
             'testMode' => true,
@@ -42,7 +42,7 @@ class QueryTest extends MedooTestCase
         );
     }
 
-    public function testQueryTableWithPrefix()
+    public function testQueryTableWithPrefix(): void
     {
         $database = new Medoo([
             'testMode' => true,
@@ -59,7 +59,7 @@ class QueryTest extends MedooTestCase
         );
     }
 
-    public function testQueryShowTableWithPrefix()
+    public function testQueryShowTableWithPrefix(): void
     {
         $database = new Medoo([
             'testMode' => true,
@@ -77,7 +77,7 @@ class QueryTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testPreparedStatementQuery($type)
+    public function testPreparedStatementQuery(string $type): void
     {
         $this->setType($type);
 
@@ -99,7 +99,7 @@ class QueryTest extends MedooTestCase
         );
     }
 
-    public function testQueryEscape()
+    public function testQueryEscape(): void
     {
         $database = new Medoo([
             'testMode' => true,

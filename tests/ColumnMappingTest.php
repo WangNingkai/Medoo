@@ -17,6 +17,7 @@ class ColumnMappingTest extends MedooTestCase
                 ]);
             }
 
+            /** @param array<array-key, mixed> $columns */
             public function pushColumns(array $columns): string
             {
                 $map = [];
@@ -24,6 +25,10 @@ class ColumnMappingTest extends MedooTestCase
                 return $this->columnPush($columns, $map, true);
             }
 
+            /**
+             * @param array<array-key, mixed> $columns
+             * @return array<array-key, array{0: string, 1?: string}>
+             */
             public function buildColumnMap(array $columns): array
             {
                 $stack = [];
@@ -31,6 +36,12 @@ class ColumnMappingTest extends MedooTestCase
                 return $this->columnMap($columns, $stack, true);
             }
 
+            /**
+             * @param list<array<array-key, mixed>> $rows
+             * @param array<array-key, mixed> $columns
+             * @param array<array-key, array{0: string, 1?: string}> $columnMap
+             * @return array<array-key, mixed>
+             */
             public function mapRows(array $rows, array $columns, array $columnMap): array
             {
                 $result = [];
@@ -40,7 +51,7 @@ class ColumnMappingTest extends MedooTestCase
                     $this->dataMap($row, $columns, $columnMap, $stack, true, $result);
                 }
 
-                return $result;
+                return $result ?? [];
             }
         };
 

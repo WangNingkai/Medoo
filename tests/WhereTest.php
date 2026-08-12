@@ -8,7 +8,7 @@ use Medoo\Medoo;
 class WhereTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testBasicWhere($type)
+    public function testBasicWhere(string $type): void
     {
         $this->setType($type);
 
@@ -48,12 +48,12 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testBetweenDateTimeWhere($type)
+    public function testBetweenDateTimeWhere(string $type): void
     {
         $this->setType($type);
 
         $this->database->select("account", "user_name", [
-            "birthday[<>]" => [date("Y-m-d", mktime(0, 0, 0, 1, 1, 2015)), date("Y-m-d", mktime(0, 0, 0, 1, 1, 2045))]
+            "birthday[<>]" => ['2015-01-01', '2045-01-01']
         ]);
 
         $this->assertQuery(
@@ -68,12 +68,12 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testNotBetweenDateTimeWhere($type)
+    public function testNotBetweenDateTimeWhere(string $type): void
     {
         $this->setType($type);
 
         $this->database->select("account", "user_name", [
-            "birthday[><]" => [date("Y-m-d", mktime(0, 0, 0, 1, 1, 2015)), date("Y-m-d", mktime(0, 0, 0, 1, 1, 2045))]
+            "birthday[><]" => ['2015-01-01', '2045-01-01']
         ]);
 
         $this->assertQuery(
@@ -88,7 +88,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testBetweenStringWhere($type)
+    public function testBetweenStringWhere(string $type): void
     {
         $this->setType($type);
 
@@ -108,7 +108,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testBetweenRawWhere($type)
+    public function testBetweenRawWhere(string $type): void
     {
         $this->setType($type);
 
@@ -131,12 +131,12 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testGreaterDateTimeWhere($type)
+    public function testGreaterDateTimeWhere(string $type): void
     {
         $this->setType($type);
 
         $this->database->select("account", "user_name", [
-            "birthday[>]" => date("Y-m-d", mktime(0, 0, 0, 1, 1, 2045))
+            "birthday[>]" => '2045-01-01'
         ]);
 
         $this->assertQuery(
@@ -150,7 +150,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testArrayIntValuesWhere($type)
+    public function testArrayIntValuesWhere(string $type): void
     {
         $this->setType($type);
 
@@ -170,7 +170,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testArrayStringValuesWhere($type)
+    public function testArrayStringValuesWhere(string $type): void
     {
         $this->setType($type);
 
@@ -190,7 +190,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testRawArrayValuesWhere($type)
+    public function testRawArrayValuesWhere(string $type): void
     {
         $this->setType($type);
 
@@ -213,7 +213,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testRawNotInArrayValuesWhere($type)
+    public function testRawNotInArrayValuesWhere(string $type): void
     {
         $this->setType($type);
 
@@ -236,7 +236,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testNegativeWhere($type)
+    public function testNegativeWhere(string $type): void
     {
         $this->setType($type);
 
@@ -268,7 +268,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testBasicAndRelativityWhere($type)
+    public function testBasicAndRelativityWhere(string $type): void
     {
         $this->setType($type);
 
@@ -291,7 +291,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testBasicSingleRelativityWhere($type)
+    public function testBasicSingleRelativityWhere(string $type): void
     {
         $this->setType($type);
 
@@ -312,7 +312,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testBasicOrRelativityWhere($type)
+    public function testBasicOrRelativityWhere(string $type): void
     {
         $this->setType($type);
 
@@ -338,7 +338,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testCompoundRelativityWhere($type)
+    public function testCompoundRelativityWhere(string $type): void
     {
         $this->setType($type);
 
@@ -364,7 +364,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testCompoundDuplicatedKeysWhere($type)
+    public function testCompoundDuplicatedKeysWhere(string $type): void
     {
         $this->setType($type);
 
@@ -394,7 +394,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testColumnsRelationshipWhere($type)
+    public function testColumnsRelationshipWhere(string $type): void
     {
         $this->setType($type);
 
@@ -422,7 +422,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testBasicLikeWhere($type)
+    public function testBasicLikeWhere(string $type): void
     {
         $this->setType($type);
 
@@ -444,7 +444,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testGroupedLikeWhere($type)
+    public function testGroupedLikeWhere(string $type): void
     {
         $this->setType($type);
 
@@ -466,7 +466,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testNegativeLikeWhere($type)
+    public function testNegativeLikeWhere(string $type): void
     {
         $this->setType($type);
 
@@ -486,7 +486,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testNonEscapeLikeWhere($type)
+    public function testNonEscapeLikeWhere(string $type): void
     {
         $this->setType($type);
 
@@ -508,7 +508,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testEscapeLikeWhere($type)
+    public function testEscapeLikeWhere(string $type): void
     {
         $this->setType($type);
 
@@ -528,7 +528,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testCompoundLikeWhere($type)
+    public function testCompoundLikeWhere(string $type): void
     {
         $this->setType($type);
 
@@ -550,7 +550,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testWildcardLikeWhere($type)
+    public function testWildcardLikeWhere(string $type): void
     {
         $this->setType($type);
 
@@ -578,7 +578,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testMultipleLikeWhere($type)
+    public function testMultipleLikeWhere(string $type): void
     {
         $this->setType($type);
 
@@ -611,7 +611,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testBasicOrderWhere($type)
+    public function testBasicOrderWhere(string $type): void
     {
         $this->setType($type);
 
@@ -630,7 +630,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testMultipleOrderWhere($type)
+    public function testMultipleOrderWhere(string $type): void
     {
         $this->setType($type);
 
@@ -665,7 +665,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testMultipleOrderWhereWithStringValues($type)
+    public function testMultipleOrderWhereWithStringValues(string $type): void
     {
         $this->setType($type);
 
@@ -690,7 +690,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testOrderWithRawWhere($type)
+    public function testOrderWithRawWhere(string $type): void
     {
         $this->setType($type);
 
@@ -708,7 +708,7 @@ class WhereTest extends MedooTestCase
         );
     }
 
-    public function testFullTextSearchWhere()
+    public function testFullTextSearchWhere(): void
     {
         $this->setType("mysql");
 
@@ -731,7 +731,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testRegularExpressionWhere($type)
+    public function testRegularExpressionWhere(string $type): void
     {
         $this->setType($type);
 
@@ -764,7 +764,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testNegativeRegularExpressionWhere($type)
+    public function testNegativeRegularExpressionWhere(string $type): void
     {
         $this->setType($type);
 
@@ -797,7 +797,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testRawWhere($type)
+    public function testRawWhere(string $type): void
     {
         $this->setType($type);
 
@@ -816,7 +816,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testLimitWhere($type)
+    public function testLimitWhere(string $type): void
     {
         $this->setType($type);
 
@@ -845,7 +845,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testLimitOffsetWhere($type)
+    public function testLimitOffsetWhere(string $type): void
     {
         $this->setType($type);
 
@@ -874,7 +874,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testGroupWhere($type)
+    public function testGroupWhere(string $type): void
     {
         $this->setType($type);
 
@@ -893,7 +893,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testGroupWithArrayWhere($type)
+    public function testGroupWithArrayWhere(string $type): void
     {
         $this->setType($type);
 
@@ -916,7 +916,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testGroupWithRawWhere($type)
+    public function testGroupWithRawWhere(string $type): void
     {
         $this->setType($type);
 
@@ -935,7 +935,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testHavingWhere($type)
+    public function testHavingWhere(string $type): void
     {
         $this->setType($type);
 
@@ -956,7 +956,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testHavingWithRawWhere($type)
+    public function testHavingWithRawWhere(string $type): void
     {
         $this->setType($type);
 
@@ -975,7 +975,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testHavingWithAggregateRawWhere($type)
+    public function testHavingWithAggregateRawWhere(string $type): void
     {
         $this->setType($type);
 
@@ -996,7 +996,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testRawWhereClause($type)
+    public function testRawWhereClause(string $type): void
     {
         $this->setType($type);
 
@@ -1017,7 +1017,7 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testRawWhereWithJoinClause($type)
+    public function testRawWhereWithJoinClause(string $type): void
     {
         $this->setType($type);
 

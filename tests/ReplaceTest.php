@@ -8,7 +8,7 @@ use InvalidArgumentException;
 class ReplaceTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testReplace($type)
+    public function testReplace(string $type): void
     {
         $this->setType($type);
 
@@ -36,7 +36,7 @@ class ReplaceTest extends MedooTestCase
         );
     }
 
-    public function testReplaceEmptyColumns()
+    public function testReplaceEmptyColumns(): void
     {
         $this->expectException(InvalidArgumentException::class);
 

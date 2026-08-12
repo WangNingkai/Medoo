@@ -6,7 +6,7 @@ namespace Medoo\Tests;
 class HasTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testHas($type)
+    public function testHas(string $type): void
     {
         $this->setType($type);
 

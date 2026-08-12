@@ -6,7 +6,7 @@ namespace Medoo\Tests;
 class GetTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testGet($type)
+    public function testGet(string $type): void
     {
         $this->setType($type);
 
@@ -38,7 +38,7 @@ class GetTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testGetWithColumns($type)
+    public function testGetWithColumns(string $type): void
     {
         $this->setType($type);
 
@@ -73,7 +73,7 @@ class GetTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testGetWithJoin($type)
+    public function testGetWithJoin(string $type): void
     {
         $this->setType($type);
 
@@ -108,7 +108,7 @@ class GetTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testGetWithJoinAndWhere($type)
+    public function testGetWithJoinAndWhere(string $type): void
     {
         $this->setType($type);
 

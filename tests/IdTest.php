@@ -2,10 +2,13 @@
 
 namespace Medoo\Tests;
 
+use PDO;
+use PDOStatement;
+
 #[\PHPUnit\Framework\Attributes\CoversClass(\Medoo\Medoo::class)]
 class IdTest extends MedooTestCase
 {
-    public function testOracleIdReturnsCachedValue()
+    public function testOracleIdReturnsCachedValue(): void
     {
         $this->setType('oracle');
         $this->database->returnId = '42';
@@ -13,14 +16,14 @@ class IdTest extends MedooTestCase
         $this->assertSame('42', $this->database->id());
     }
 
-    public function testIdReturnsNullWithoutConnection()
+    public function testIdReturnsNullWithoutConnection(): void
     {
         $this->setType('mysql');
 
         $this->assertNull($this->database->id());
     }
 
-    public function testPostgreSQLIdUsesLastvalWithoutSequenceName()
+    public function testPostgreSQLIdUsesLastvalWithoutSequenceName(): void
     {
         $this->setType('pgsql');
         $pdo = new IdTestPDO('12', '34');
@@ -31,7 +34,7 @@ class IdTest extends MedooTestCase
         $this->assertSame([], $pdo->lastInsertIdNames);
     }
 
-    public function testPostgreSQLIdUsesSequenceName()
+    public function testPostgreSQLIdUsesSequenceName(): void
     {
         $this->setType('pgsql');
         $pdo = new IdTestPDO('56', '78');
@@ -42,7 +45,7 @@ class IdTest extends MedooTestCase
         $this->assertSame(['account_id_seq'], $pdo->lastInsertIdNames);
     }
 
-    public function testPostgreSQLIdKeepsZeroValue()
+    public function testPostgreSQLIdKeepsZeroValue(): void
     {
         $this->setType('pgsql');
         $this->database->pdo = new IdTestPDO('12', '0');
@@ -50,7 +53,7 @@ class IdTest extends MedooTestCase
         $this->assertSame('0', $this->database->id());
     }
 
-    public function testSybaseIdUsesIdentity()
+    public function testSybaseIdUsesIdentity(): void
     {
         $this->setType('sybase');
         $pdo = new IdTestPDO('12', '90');
@@ -61,7 +64,7 @@ class IdTest extends MedooTestCase
         $this->assertSame([], $pdo->lastInsertIdNames);
     }
 
-    public function testDriverFalseIdReturnsNull()
+    public function testDriverFalseIdReturnsNull(): void
     {
         $this->setType('mysql');
         $this->database->pdo = new IdTestPDO(false, '12');
@@ -69,7 +72,7 @@ class IdTest extends MedooTestCase
         $this->assertNull($this->database->id());
     }
 
-    public function testDefaultDriverIdUsesPdoLastInsertId()
+    public function testDefaultDriverIdUsesPdoLastInsertId(): void
     {
         $this->setType('mysql');
         $pdo = new IdTestPDO('123', '12');
@@ -81,28 +84,31 @@ class IdTest extends MedooTestCase
     }
 }
 
-class IdTestPDO
+class IdTestPDO extends PDO
 {
-    public $queries = [];
-    public $lastInsertIdNames = [];
+    /** @var list<string> */
+    public array $queries = [];
 
-    protected $lastInsertId;
-    protected $queryResult;
+    /** @var list<string|null> */
+    public array $lastInsertIdNames = [];
 
-    public function __construct($lastInsertId, $queryResult)
+    protected string|false $lastInsertId;
+    protected string|false $queryResult;
+
+    public function __construct(string|false $lastInsertId, string|false $queryResult)
     {
         $this->lastInsertId = $lastInsertId;
         $this->queryResult = $queryResult;
     }
 
-    public function lastInsertId(?string $name = null)
+    public function lastInsertId(?string $name = null): string|false
     {
         $this->lastInsertIdNames[] = $name;
 
         return $this->lastInsertId;
     }
 
-    public function query(string $query)
+    public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement|false
     {
         $this->queries[] = $query;
 
@@ -110,16 +116,16 @@ class IdTestPDO
     }
 }
 
-class IdTestStatement
+class IdTestStatement extends PDOStatement
 {
-    protected $value;
+    protected string|false $value;
 
-    public function __construct($value)
+    public function __construct(string|false $value)
     {
         $this->value = $value;
     }
 
-    public function fetchColumn()
+    public function fetchColumn(int $column = 0): mixed
     {
         return $this->value;
     }

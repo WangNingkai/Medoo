@@ -5,7 +5,7 @@ namespace Medoo\Tests;
 #[\PHPUnit\Framework\Attributes\CoversClass(\Medoo\Medoo::class)]
 class RandTest extends MedooTestCase
 {
-    public function testSybaseRand()
+    public function testSybaseRand(): void
     {
         $this->setType('sybase');
 
@@ -21,7 +21,7 @@ class RandTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testRand($type)
+    public function testRand(string $type): void
     {
         $this->setType($type);
 
@@ -54,7 +54,7 @@ class RandTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testWhereRand($type)
+    public function testWhereRand(string $type): void
     {
         $this->setType($type);
 
@@ -93,7 +93,7 @@ class RandTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testWhereWithJoinRand($type)
+    public function testWhereWithJoinRand(string $type): void
     {
         $this->setType($type);
 
@@ -138,7 +138,7 @@ class RandTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testWithJoinRand($type)
+    public function testWithJoinRand(string $type): void
     {
         $this->setType($type);
 

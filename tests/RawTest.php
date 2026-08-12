@@ -8,7 +8,7 @@ use Medoo\Medoo;
 class RawTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testRawWithPlaceholder($type)
+    public function testRawWithPlaceholder(string $type): void
     {
         $this->setType($type);
 
@@ -26,7 +26,7 @@ class RawTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testRawWithSamePlaceholderName($type)
+    public function testRawWithSamePlaceholderName(string $type): void
     {
         $this->setType($type);
 

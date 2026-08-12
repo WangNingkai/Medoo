@@ -6,7 +6,7 @@ namespace Medoo\Tests;
 class CreateTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testCreate($type)
+    public function testCreate(string $type): void
     {
         $this->setType($type);
 
@@ -55,7 +55,7 @@ class CreateTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testCreateWithStringDefinition($type)
+    public function testCreateWithStringDefinition(string $type): void
     {
         $this->setType($type);
 
@@ -87,7 +87,7 @@ class CreateTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testCreateWithSingleOption($type)
+    public function testCreateWithSingleOption(string $type): void
     {
         $this->setType($type);
 

@@ -8,7 +8,7 @@ use Medoo\Medoo;
 class InsertTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testInsert($type)
+    public function testInsert(string $type): void
     {
         $this->setType($type);
 
@@ -27,7 +27,7 @@ class InsertTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testInsertWithArray($type)
+    public function testInsertWithArray(string $type): void
     {
         $this->setType($type);
 
@@ -49,7 +49,7 @@ class InsertTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testInsertWithJSON($type)
+    public function testInsertWithJSON(string $type): void
     {
         $this->setType($type);
 
@@ -71,7 +71,7 @@ class InsertTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testInsertWithRaw($type)
+    public function testInsertWithRaw(string $type): void
     {
         $this->setType($type);
 
@@ -89,7 +89,7 @@ class InsertTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testInsertWithNull($type)
+    public function testInsertWithNull(string $type): void
     {
         $this->setType($type);
 
@@ -107,7 +107,7 @@ class InsertTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testInsertWithObject($type)
+    public function testInsertWithObject(string $type): void
     {
         $this->setType($type);
 
@@ -127,7 +127,7 @@ class InsertTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testMultiInsert($type)
+    public function testMultiInsert(string $type): void
     {
         $this->setType($type);
 
@@ -151,7 +151,7 @@ class InsertTest extends MedooTestCase
         );
     }
 
-    public function testOracleWithPrimaryKeyInsert()
+    public function testOracleWithPrimaryKeyInsert(): void
     {
         $this->setType("oracle");
 
@@ -170,7 +170,7 @@ class InsertTest extends MedooTestCase
         );
     }
 
-    public function testOracleWithLOBsInsert()
+    public function testOracleWithLOBsInsert(): void
     {
         $this->setType("oracle");
 
@@ -191,7 +191,7 @@ class InsertTest extends MedooTestCase
         );
     }
 
-    public function testOracleWithLOBsAndIdInsert()
+    public function testOracleWithLOBsAndIdInsert(): void
     {
         $this->setType("oracle");
 

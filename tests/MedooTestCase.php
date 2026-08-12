@@ -7,10 +7,11 @@ use PHPUnit\Framework\TestCase;
 
 class MedooTestCase extends TestCase
 {
+    /** @var Medoo */
     protected $database;
 
-    public $tableAliasConnector = ' AS ';
-    public $quotePattern = '"$1"';
+    public string $tableAliasConnector = ' AS ';
+    public string $quotePattern = '"$1"';
 
     public function setUp(): void
     {
@@ -19,6 +20,7 @@ class MedooTestCase extends TestCase
         ]);
     }
 
+    /** @return array<string, array{string}> */
     public static function typesProvider(): array
     {
         return [
@@ -30,7 +32,7 @@ class MedooTestCase extends TestCase
         ];
     }
 
-    public function setType($type): void
+    public function setType(string $type): void
     {
         $this->database->setupType($type);
 
@@ -43,13 +45,17 @@ class MedooTestCase extends TestCase
         }
     }
 
-    public function expectedQuery($expected): string
+    public function expectedQuery(string $expected): string
     {
         $result = preg_replace(
             '/(?!\'[^\s]+\s?)"([\p{L}_][\p{L}\p{N}@$#\-_]*)"(?!\s?[^\s]+\')/u',
             $this->quotePattern,
             str_replace("\n", " ", $expected)
         );
+
+        if ($result === null) {
+            return $expected;
+        }
 
         return str_replace(
             ' @AS ',
@@ -58,11 +64,15 @@ class MedooTestCase extends TestCase
         );
     }
 
-    public function assertQuery($expected, $query): void
+    /** @param array<string, string>|string $expected */
+    public function assertQuery($expected, ?string $query): void
     {
         if (is_array($expected)) {
+            $type = $this->database->type;
+            $expectedQuery = is_string($type) && isset($expected[$type]) ? $expected[$type] : $expected['default'];
+
             $this->assertEquals(
-                $this->expectedQuery($expected[$this->database->type] ?? $expected['default']),
+                $this->expectedQuery($expectedQuery),
                 $query
             );
         } else {
@@ -73,9 +83,9 @@ class MedooTestCase extends TestCase
 
 class Foo
 {
-    public $bar = "cat";
+    public string $bar = "cat";
 
-    public function __wakeup()
+    public function __wakeup(): void
     {
         $this->bar = "dog";
     }

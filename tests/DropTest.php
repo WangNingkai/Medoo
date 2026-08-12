@@ -8,7 +8,7 @@ use Medoo\Medoo;
 class DropTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testDrop($type)
+    public function testDrop(string $type): void
     {
         $this->setType($type);
 
@@ -22,7 +22,7 @@ class DropTest extends MedooTestCase
         );
     }
 
-    public function testDropWithPrefix()
+    public function testDropWithPrefix(): void
     {
         $database = new Medoo([
             'testMode' => true,

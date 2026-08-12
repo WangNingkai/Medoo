@@ -8,7 +8,7 @@ use Medoo\Medoo;
 class DeleteTest extends MedooTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testDelete($type)
+    public function testDelete(string $type): void
     {
         $this->setType($type);
 
@@ -29,7 +29,7 @@ class DeleteTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
-    public function testDeleteRaw($type)
+    public function testDeleteRaw(string $type): void
     {
         $this->setType($type);
 
