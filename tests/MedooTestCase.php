@@ -35,12 +35,13 @@ class MedooTestCase extends TestCase
     public function setType(string $type): void
     {
         $this->database->setupType($type);
+        $databaseType = $this->database->type;
 
-        if ($type === 'oracle') {
+        if ($databaseType === 'oracle') {
             $this->tableAliasConnector = ' ';
-        } elseif ($type === 'mysql') {
+        } elseif ($databaseType === 'mysql') {
             $this->quotePattern = '`$1`';
-        } elseif ($type === 'mssql') {
+        } elseif ($databaseType === 'mssql') {
             $this->quotePattern = '[$1]';
         }
     }
