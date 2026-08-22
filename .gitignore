@@ -218,6 +218,9 @@ pip-log.txt
 #php-cs-fixer
 /.php_cs
 
+# Local PHPStan overrides
+/phpstan.neon
+
 #PHPUnit
 /.phpunit.cache
 
