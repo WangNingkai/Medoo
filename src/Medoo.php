@@ -262,10 +262,10 @@ class Medoo
      *     logging?: mixed,
      *     dsn?: mixed,
      *     port?: mixed,
-     *     charset?: string,
+     *     charset?: mixed,
      *     driver?: string,
      *     appname?: string,
-     *     collation?: string,
+     *     collation?: mixed,
      *     username?: string,
      *     password?: string,
      *     option?: array<int, mixed>,
@@ -300,6 +300,12 @@ class Medoo
         $database = $options['database'] ?? $options['database_name'] ?? '';
         $host = $options['host'] ?? $options['server'] ?? '';
         $host = $host === false ? '' : $host;
+        $charset = $options['charset'] ?? null;
+        $encodingPattern = '/\A[A-Za-z][A-Za-z0-9_-]*\z/';
+
+        if ($charset !== null && (!is_string($charset) || preg_match($encodingPattern, $charset) !== 1)) {
+            throw new InvalidArgumentException('Invalid charset supplied.');
+        }
 
         if (isset($options['logging']) && is_bool($options['logging'])) {
             $this->logging = $options['logging'];
@@ -312,6 +318,23 @@ class Medoo
             case 'mysql':
                 // Use standard quoted identifiers in MySQL.
                 $commands[] = 'SET SQL_MODE=ANSI_QUOTES';
+
+                if ($charset !== null && isset($options['collation'])) {
+                    $collation = $options['collation'];
+
+                    if (!is_string($collation) || preg_match($encodingPattern, $collation) !== 1) {
+                        throw new InvalidArgumentException('Invalid collation supplied.');
+                    }
+
+                    $commands[] = "SET NAMES '{$charset}' COLLATE '{$collation}'";
+                }
+
+                break;
+
+            case 'pgsql':
+                if ($charset !== null) {
+                    $commands[] = "SET NAMES '{$charset}'";
+                }
 
                 break;
 
@@ -366,8 +389,8 @@ class Medoo
                         'dbname' => $database
                     ];
 
-                    if (isset($options['charset'])) {
-                        $attr['charset'] = $options['charset'];
+                    if ($charset !== null) {
+                        $attr['charset'] = $charset;
                     }
 
                     if (isset($options['socket'])) {
@@ -410,8 +433,8 @@ class Medoo
                         'dbname' => $database
                     ];
 
-                    if (isset($options['charset'])) {
-                        $attr['charset'] = $options['charset'];
+                    if ($charset !== null) {
+                        $attr['charset'] = $charset;
                     }
 
                     if ($isPort) {
@@ -428,8 +451,8 @@ class Medoo
                             $database
                     ];
 
-                    if (isset($options['charset'])) {
-                        $attr['charset'] = $options['charset'];
+                    if ($charset !== null) {
+                        $attr['charset'] = $charset;
                     }
 
                     break;
@@ -446,8 +469,8 @@ class Medoo
                             $attr['appname'] = $options['appname'];
                         }
 
-                        if (isset($options['charset'])) {
-                            $attr['charset'] = $options['charset'];
+                        if ($charset !== null) {
+                            $attr['charset'] = $charset;
                         }
                     } else {
                         $attr = [
@@ -534,14 +557,6 @@ class Medoo
             }
 
             $dsn = $driver . ':' . implode(';', $stack);
-        }
-
-        if (isset($options['charset'])) {
-            if ($this->type === 'pgsql') {
-                $commands[] = "SET NAMES '{$options['charset']}'";
-            } elseif ($this->type === 'mysql' && isset($options['collation'])) {
-                $commands[] = "SET NAMES '{$options['charset']}' COLLATE '{$options['collation']}'";
-            }
         }
 
         $this->dsn = $dsn;
