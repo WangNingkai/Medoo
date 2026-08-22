@@ -1902,7 +1902,9 @@ class Medoo
                 return null;
             }
 
-            return $statement->fetchAll(PDO::FETCH_ASSOC);
+            $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            return is_array($data) ? $data : [];
         }
 
         if (!is_array($columns)) {
@@ -2468,7 +2470,7 @@ class Medoo
             $statement = $this->pdo->query('SELECT @@IDENTITY');
             $id = $statement ? $statement->fetchColumn() : false;
         } else {
-            $id = $this->pdo->lastInsertId($name);
+            $id = $name === null ? $this->pdo->lastInsertId() : $this->pdo->lastInsertId($name);
         }
 
         return $id === false ? null : (string) $id;
