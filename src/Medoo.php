@@ -1083,6 +1083,11 @@ class Medoo
                                 break;
                             }
 
+                            if ($value === []) {
+                                $stack[] = '1 = 1';
+                                break;
+                            }
+
                             $values = [];
 
                             foreach ($value as $index => $item) {
@@ -1196,6 +1201,11 @@ class Medoo
 
                 case 'array':
                     if (!is_array($value)) {
+                        break;
+                    }
+
+                    if ($value === []) {
+                        $stack[] = '1 = 0';
                         break;
                     }
 

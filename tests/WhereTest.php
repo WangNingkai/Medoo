@@ -190,6 +190,44 @@ class WhereTest extends MedooTestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
+    public function testEmptyArrayValuesWhere(string $type): void
+    {
+        $this->setType($type);
+
+        $this->database->select("account", "user_name", [
+            "user_id" => []
+        ]);
+
+        $this->assertQuery(
+            <<<EOD
+            SELECT "user_name"
+            FROM "account"
+            WHERE 1 = 0
+            EOD,
+            $this->database->queryString
+        );
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
+    public function testEmptyNotInArrayValuesWhere(string $type): void
+    {
+        $this->setType($type);
+
+        $this->database->select("account", "user_name", [
+            "user_id[!]" => []
+        ]);
+
+        $this->assertQuery(
+            <<<EOD
+            SELECT "user_name"
+            FROM "account"
+            WHERE 1 = 1
+            EOD,
+            $this->database->queryString
+        );
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProviderExternal(MedooTestCase::class, 'typesProvider')]
     public function testRawArrayValuesWhere(string $type): void
     {
         $this->setType($type);
