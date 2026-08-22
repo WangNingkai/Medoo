@@ -170,6 +170,25 @@ class InsertTest extends MedooTestCase
         );
     }
 
+    public function testPostgreSQLWithPrimaryKeyInsert(): void
+    {
+        $this->setType("pgsql");
+
+        $this->database->insert("account", [
+            "name" => "foo",
+            "email" => "foo@bar.com"
+        ], "id");
+
+        $this->assertQuery(
+            <<<EOD
+            INSERT INTO "account" ("name", "email")
+            VALUES ('foo', 'foo@bar.com')
+            RETURNING "id"
+            EOD,
+            $this->database->queryString
+        );
+    }
+
     public function testOracleWithLOBsInsert(): void
     {
         $this->setType("oracle");

@@ -3,6 +3,7 @@
 namespace Medoo\Tests;
 
 use PDO;
+use PDOException;
 use PDOStatement;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(\Medoo\Medoo::class)]
@@ -32,6 +33,26 @@ class IdTest extends MedooTestCase
         $this->assertSame('34', $this->database->id());
         $this->assertSame(['SELECT LASTVAL()'], $pdo->queries);
         $this->assertSame([], $pdo->lastInsertIdNames);
+    }
+
+    public function testPostgreSQLIdUsesCachedReturningValue(): void
+    {
+        $this->setType('pgsql');
+        $pdo = new IdTestPDO('12', '34');
+        $this->database->pdo = $pdo;
+        $this->database->returnId = '42';
+
+        $this->assertSame('42', $this->database->id());
+        $this->assertSame([], $pdo->queries);
+        $this->assertSame([], $pdo->lastInsertIdNames);
+    }
+
+    public function testPostgreSQLIdReturnsNullBeforeSequenceUse(): void
+    {
+        $this->setType('pgsql');
+        $this->database->pdo = new IdTestPDO('12', new PDOException('lastval is not yet defined'));
+
+        $this->assertNull($this->database->id());
     }
 
     public function testPostgreSQLIdUsesSequenceName(): void
@@ -93,9 +114,9 @@ class IdTestPDO extends PDO
     public array $lastInsertIdNames = [];
 
     protected string|false $lastInsertId;
-    protected string|false $queryResult;
+    protected string|false|PDOException $queryResult;
 
-    public function __construct(string|false $lastInsertId, string|false $queryResult)
+    public function __construct(string|false $lastInsertId, string|false|PDOException $queryResult)
     {
         $this->lastInsertId = $lastInsertId;
         $this->queryResult = $queryResult;
@@ -111,6 +132,11 @@ class IdTestPDO extends PDO
     public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement|false
     {
         $this->queries[] = $query;
+
+        if ($this->queryResult instanceof PDOException) {
+            $this->queryResult->errorInfo = ['55000', 0, $this->queryResult->getMessage()];
+            throw $this->queryResult;
+        }
 
         return new IdTestStatement($this->queryResult);
     }

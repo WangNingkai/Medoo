@@ -298,7 +298,7 @@ class Medoo
         $this->setupType($options['type']);
 
         $database = $options['database'] ?? $options['database_name'] ?? '';
-        $host = isset($options['socket']) ? '' : ($options['host'] ?? $options['server'] ?? '');
+        $host = $options['host'] ?? $options['server'] ?? '';
         $host = $host === false ? '' : $host;
 
         if (isset($options['logging']) && is_bool($options['logging'])) {
@@ -384,10 +384,18 @@ class Medoo
 
                 case 'pgsql':
                     $attr = [
-                        'driver' => 'pgsql',
-                        'host' => $host,
-                        'dbname' => $database
+                        'driver' => 'pgsql'
                     ];
+
+                    $pgsqlHost = $options['socket'] ?? $host;
+
+                    if ($pgsqlHost !== '') {
+                        $attr['host'] = $pgsqlHost;
+                    }
+
+                    if ($database !== '') {
+                        $attr['dbname'] = $database;
+                    }
 
                     if ($isPort) {
                         $attr['port'] = $port;
@@ -1948,11 +1956,12 @@ class Medoo
      *
      * @param string $table The table name.
      * @param array<array-key, mixed> $values A row or a list of rows to insert.
-     * @param string|null $primaryKey The primary key column used with Oracle RETURNING.
+     * @param string|null $primaryKey The primary key column used with Oracle or PostgreSQL RETURNING.
      * @return \PDOStatement|null
      */
     public function insert(string $table, array $values, ?string $primaryKey = null): ?PDOStatement
     {
+        $this->returnId = '';
         $stack = [];
         $columns = [];
         $fields = [];
@@ -2032,6 +2041,24 @@ class Medoo
         }
 
         $query = 'INSERT INTO ' . $this->tableQuote($table) . ' (' . implode(', ', $fields) . ') VALUES ' . implode(', ', $stack);
+
+        if ($this->type === 'pgsql' && $primaryKey !== null && $primaryKey !== '') {
+            $statement = $this->exec($query . ' RETURNING ' . $this->columnQuote($primaryKey), $map);
+
+            if ($statement !== null) {
+                $returnIds = $statement->fetchAll(PDO::FETCH_COLUMN);
+
+                if (is_array($returnIds) && $returnIds !== []) {
+                    $returnId = end($returnIds);
+
+                    if ($returnId !== false && is_scalar($returnId)) {
+                        $this->returnId = (string) $returnId;
+                    }
+                }
+            }
+
+            return $statement;
+        }
 
         if (
             $this->type === 'oracle' && (!empty($returnings) || isset($primaryKey))
@@ -2464,8 +2491,23 @@ class Medoo
         }
 
         if ($type === 'pgsql' && $name === null) {
-            $statement = $this->pdo->query('SELECT LASTVAL()');
-            $id = $statement ? $statement->fetchColumn() : false;
+            if ($this->returnId !== '') {
+                return $this->returnId;
+            }
+
+            try {
+                $statement = $this->pdo->query('SELECT LASTVAL()');
+                $id = $statement ? $statement->fetchColumn() : false;
+            } catch (PDOException $e) {
+                $errorInfo = $e->errorInfo;
+                $sqlState = is_array($errorInfo) && isset($errorInfo[0]) ? $errorInfo[0] : $e->getCode();
+
+                if ($sqlState === '55000') {
+                    return null;
+                }
+
+                throw $e;
+            }
         } elseif ($type === 'sybase') {
             $statement = $this->pdo->query('SELECT @@IDENTITY');
             $id = $statement ? $statement->fetchColumn() : false;
